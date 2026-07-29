@@ -9,38 +9,260 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SubjectsRouteImport } from './routes/subjects'
+import { Route as SeniorSchoolRouteImport } from './routes/senior-school'
+import { Route as RegisterRouteImport } from './routes/register'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as LatestPapersRouteImport } from './routes/latest-papers'
+import { Route as JuniorSchoolRouteImport } from './routes/junior-school'
+import { Route as DashboardRouteImport } from './routes/dashboard'
+import { Route as ContactRouteImport } from './routes/contact'
+import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as SubjectsSubjectRouteImport } from './routes/subjects.$subject'
+import { Route as ResourceIdRouteImport } from './routes/resource.$id'
+import { Route as GradeGradeRouteImport } from './routes/grade.$grade'
 
+const SubjectsRoute = SubjectsRouteImport.update({
+  id: '/subjects',
+  path: '/subjects',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SeniorSchoolRoute = SeniorSchoolRouteImport.update({
+  id: '/senior-school',
+  path: '/senior-school',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RegisterRoute = RegisterRouteImport.update({
+  id: '/register',
+  path: '/register',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LatestPapersRoute = LatestPapersRouteImport.update({
+  id: '/latest-papers',
+  path: '/latest-papers',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const JuniorSchoolRoute = JuniorSchoolRouteImport.update({
+  id: '/junior-school',
+  path: '/junior-school',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardRoute = DashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AboutRoute = AboutRouteImport.update({
+  id: '/about',
+  path: '/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SubjectsSubjectRoute = SubjectsSubjectRouteImport.update({
+  id: '/$subject',
+  path: '/$subject',
+  getParentRoute: () => SubjectsRoute,
+} as any)
+const ResourceIdRoute = ResourceIdRouteImport.update({
+  id: '/resource/$id',
+  path: '/resource/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GradeGradeRoute = GradeGradeRouteImport.update({
+  id: '/grade/$grade',
+  path: '/grade/$grade',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/contact': typeof ContactRoute
+  '/dashboard': typeof DashboardRoute
+  '/junior-school': typeof JuniorSchoolRoute
+  '/latest-papers': typeof LatestPapersRoute
+  '/login': typeof LoginRoute
+  '/register': typeof RegisterRoute
+  '/senior-school': typeof SeniorSchoolRoute
+  '/subjects': typeof SubjectsRouteWithChildren
+  '/grade/$grade': typeof GradeGradeRoute
+  '/resource/$id': typeof ResourceIdRoute
+  '/subjects/$subject': typeof SubjectsSubjectRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/contact': typeof ContactRoute
+  '/dashboard': typeof DashboardRoute
+  '/junior-school': typeof JuniorSchoolRoute
+  '/latest-papers': typeof LatestPapersRoute
+  '/login': typeof LoginRoute
+  '/register': typeof RegisterRoute
+  '/senior-school': typeof SeniorSchoolRoute
+  '/subjects': typeof SubjectsRouteWithChildren
+  '/grade/$grade': typeof GradeGradeRoute
+  '/resource/$id': typeof ResourceIdRoute
+  '/subjects/$subject': typeof SubjectsSubjectRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/contact': typeof ContactRoute
+  '/dashboard': typeof DashboardRoute
+  '/junior-school': typeof JuniorSchoolRoute
+  '/latest-papers': typeof LatestPapersRoute
+  '/login': typeof LoginRoute
+  '/register': typeof RegisterRoute
+  '/senior-school': typeof SeniorSchoolRoute
+  '/subjects': typeof SubjectsRouteWithChildren
+  '/grade/$grade': typeof GradeGradeRoute
+  '/resource/$id': typeof ResourceIdRoute
+  '/subjects/$subject': typeof SubjectsSubjectRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/about'
+    | '/contact'
+    | '/dashboard'
+    | '/junior-school'
+    | '/latest-papers'
+    | '/login'
+    | '/register'
+    | '/senior-school'
+    | '/subjects'
+    | '/grade/$grade'
+    | '/resource/$id'
+    | '/subjects/$subject'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/about'
+    | '/contact'
+    | '/dashboard'
+    | '/junior-school'
+    | '/latest-papers'
+    | '/login'
+    | '/register'
+    | '/senior-school'
+    | '/subjects'
+    | '/grade/$grade'
+    | '/resource/$id'
+    | '/subjects/$subject'
+  id:
+    | '__root__'
+    | '/'
+    | '/about'
+    | '/contact'
+    | '/dashboard'
+    | '/junior-school'
+    | '/latest-papers'
+    | '/login'
+    | '/register'
+    | '/senior-school'
+    | '/subjects'
+    | '/grade/$grade'
+    | '/resource/$id'
+    | '/subjects/$subject'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AboutRoute: typeof AboutRoute
+  ContactRoute: typeof ContactRoute
+  DashboardRoute: typeof DashboardRoute
+  JuniorSchoolRoute: typeof JuniorSchoolRoute
+  LatestPapersRoute: typeof LatestPapersRoute
+  LoginRoute: typeof LoginRoute
+  RegisterRoute: typeof RegisterRoute
+  SeniorSchoolRoute: typeof SeniorSchoolRoute
+  SubjectsRoute: typeof SubjectsRouteWithChildren
+  GradeGradeRoute: typeof GradeGradeRoute
+  ResourceIdRoute: typeof ResourceIdRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/subjects': {
+      id: '/subjects'
+      path: '/subjects'
+      fullPath: '/subjects'
+      preLoaderRoute: typeof SubjectsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/senior-school': {
+      id: '/senior-school'
+      path: '/senior-school'
+      fullPath: '/senior-school'
+      preLoaderRoute: typeof SeniorSchoolRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/register': {
+      id: '/register'
+      path: '/register'
+      fullPath: '/register'
+      preLoaderRoute: typeof RegisterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/latest-papers': {
+      id: '/latest-papers'
+      path: '/latest-papers'
+      fullPath: '/latest-papers'
+      preLoaderRoute: typeof LatestPapersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/junior-school': {
+      id: '/junior-school'
+      path: '/junior-school'
+      fullPath: '/junior-school'
+      preLoaderRoute: typeof JuniorSchoolRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard': {
+      id: '/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/about': {
+      id: '/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,11 +270,55 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/subjects/$subject': {
+      id: '/subjects/$subject'
+      path: '/$subject'
+      fullPath: '/subjects/$subject'
+      preLoaderRoute: typeof SubjectsSubjectRouteImport
+      parentRoute: typeof SubjectsRoute
+    }
+    '/resource/$id': {
+      id: '/resource/$id'
+      path: '/resource/$id'
+      fullPath: '/resource/$id'
+      preLoaderRoute: typeof ResourceIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/grade/$grade': {
+      id: '/grade/$grade'
+      path: '/grade/$grade'
+      fullPath: '/grade/$grade'
+      preLoaderRoute: typeof GradeGradeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
+interface SubjectsRouteChildren {
+  SubjectsSubjectRoute: typeof SubjectsSubjectRoute
+}
+
+const SubjectsRouteChildren: SubjectsRouteChildren = {
+  SubjectsSubjectRoute: SubjectsSubjectRoute,
+}
+
+const SubjectsRouteWithChildren = SubjectsRoute._addFileChildren(
+  SubjectsRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AboutRoute: AboutRoute,
+  ContactRoute: ContactRoute,
+  DashboardRoute: DashboardRoute,
+  JuniorSchoolRoute: JuniorSchoolRoute,
+  LatestPapersRoute: LatestPapersRoute,
+  LoginRoute: LoginRoute,
+  RegisterRoute: RegisterRoute,
+  SeniorSchoolRoute: SeniorSchoolRoute,
+  SubjectsRoute: SubjectsRouteWithChildren,
+  GradeGradeRoute: GradeGradeRoute,
+  ResourceIdRoute: ResourceIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
