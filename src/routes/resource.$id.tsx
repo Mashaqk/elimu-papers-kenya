@@ -62,7 +62,7 @@ function ResourcePage() {
           <div className="mt-8 rounded-2xl border bg-card p-6 shadow-card">
             <h2 className="font-display text-lg font-bold">What's included</h2>
             <ul className="mt-4 grid gap-2 sm:grid-cols-2">
-              {resource.includes.map((i) => (
+              {resource.includes.map((i: string) => (
                 <li key={i} className="flex items-start gap-2 text-sm">
                   <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-secondary" />
                   <span>{i}</span>
