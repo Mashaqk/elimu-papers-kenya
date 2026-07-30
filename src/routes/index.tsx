@@ -58,8 +58,8 @@ function HomePage() {
 
           <div className="relative">
             <div className="absolute -inset-4 rounded-3xl bg-accent/20 blur-2xl" aria-hidden />
-            <div className="relative overflow-hidden rounded-3xl border border-primary-foreground/15 shadow-lift">
-              <img src={heroImage.url} alt="Kenyan learners studying together with laptops and textbooks" width={1600} height={1200} className="h-full w-full object-cover" />
+            <div className="relative aspect-[4/5] overflow-hidden rounded-3xl border border-primary-foreground/15 shadow-lift sm:aspect-[3/4] lg:aspect-[4/3]">
+              <img src={heroImage.url} alt="Kenyan learner using a tablet for revision" width={1393} height={1742} className="h-full w-full object-cover object-center" />
             </div>
             <div className="absolute -bottom-5 -left-5 hidden rounded-2xl bg-card p-4 text-foreground shadow-lift ring-1 ring-border sm:block">
               <p className="text-[11px] font-bold uppercase tracking-wider text-secondary">Sample</p>
