@@ -5,7 +5,7 @@ import { GradeCard } from "@/components/site/grade-card";
 import { SubjectCard } from "@/components/site/subject-card";
 import { ResourceCard } from "@/components/site/resource-card";
 import { SectionHeading } from "@/components/site/section-heading";
-import heroImage from "@/assets/hero-students.jpg";
+import heroImage from "@/assets/hero-students.webp.asset.json";
 
 export const Route = createFileRoute("/")({
   head: () => ({
