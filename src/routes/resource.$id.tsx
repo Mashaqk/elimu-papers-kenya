@@ -1,6 +1,7 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useState } from "react";
-import { ArrowLeft, CheckCircle2, Download, FileText, ShieldCheck, Smartphone } from "lucide-react";
+import { ArrowLeft, Check, CheckCircle2, Download, FileText, Plus, ShieldCheck, Smartphone } from "lucide-react";
+import { useCart } from "@/lib/cart";
 import { GRADES, RESOURCES, SUBJECTS } from "@/data/catalog";
 import { formatKES } from "@/lib/format";
 import { BuyModal } from "@/components/site/buy-modal";
@@ -38,6 +39,8 @@ function ResourcePage() {
   const related = RESOURCES.filter((r) => r.id !== resource.id && (r.subjectSlug === resource.subjectSlug || r.gradeSlug === resource.gradeSlug)).slice(0, 3);
 
   const [open, setOpen] = useState(false);
+  const { has, toggle } = useCart();
+  const inCart = has(resource.id);
 
   return (
     <>
@@ -98,6 +101,13 @@ function ResourcePage() {
               className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-secondary px-5 py-3 font-semibold text-secondary-foreground shadow-card transition hover:bg-secondary/90"
             >
               <Download className="h-4 w-4" /> Buy Now
+            </button>
+            <button
+              onClick={() => toggle(resource.id)}
+              className={`mt-3 inline-flex w-full items-center justify-center gap-2 rounded-xl border px-5 py-3 font-semibold transition ${inCart ? "border-primary bg-primary-soft text-primary" : "hover:border-primary/40 hover:text-primary"}`}
+            >
+              {inCart ? <Check className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+              {inCart ? "In your cart" : "Add to cart"}
             </button>
             <div className="mt-4 flex flex-wrap gap-1.5">
               {["M-PESA", "Airtel Money", "Visa", "Mastercard"].map((m) => (
