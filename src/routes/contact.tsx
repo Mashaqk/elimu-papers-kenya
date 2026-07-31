@@ -32,8 +32,8 @@ function ContactPage() {
       <section className="mx-auto grid max-w-6xl gap-10 px-4 py-14 sm:px-6 lg:grid-cols-[1fr_1.4fr] lg:px-8">
         <div className="space-y-4">
           {[
-            { icon: Mail, t: "Email", d: "support@elimupepe.co.ke" },
-            { icon: Phone, t: "Phone / WhatsApp", d: "+254 700 000 000" },
+            { icon: Mail, t: "Email", d: "ElimuPepe001@gmail.com" },
+            { icon: Phone, t: "Phone / WhatsApp", d: "0728417172" },
             { icon: MapPin, t: "Location", d: "Nairobi, Kenya" },
           ].map(({ icon: Icon, t, d }) => (
             <div key={t} className="flex items-start gap-3 rounded-2xl border bg-card p-5 shadow-card">
