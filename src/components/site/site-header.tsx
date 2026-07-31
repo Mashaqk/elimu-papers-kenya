@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { Menu, X, GraduationCap } from "lucide-react";
+import { Menu, X, GraduationCap, ShoppingCart } from "lucide-react";
+import { useCart } from "@/lib/cart";
 
 const NAV = [
   { to: "/", label: "Home" },
@@ -14,6 +15,7 @@ const NAV = [
 
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
+  const { count } = useCart();
 
   return (
     <header className="sticky top-0 z-40 border-b bg-background/85 backdrop-blur">
@@ -40,11 +42,14 @@ export function SiteHeader() {
             </Link>
           ))}
           <div className="ml-2 flex items-center gap-2">
+            <CartButton count={count} />
             <Link to="/login" className="rounded-lg px-3 py-2 text-sm font-semibold text-primary hover:bg-primary-soft">Login</Link>
             <Link to="/register" className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground shadow-card transition hover:bg-primary/90">Register</Link>
           </div>
         </nav>
 
+        <div className="flex items-center gap-2 lg:hidden">
+          <CartButton count={count} />
         <button
           onClick={() => setOpen((v) => !v)}
           aria-label="Toggle menu"
@@ -52,6 +57,7 @@ export function SiteHeader() {
         >
           {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
         </button>
+        </div>
       </div>
 
       {open && (
@@ -68,6 +74,13 @@ export function SiteHeader() {
                 {n.label}
               </Link>
             ))}
+            <Link
+              to="/cart"
+              onClick={() => setOpen(false)}
+              className="rounded-lg px-3 py-2 text-sm font-medium text-foreground/80 hover:bg-primary-soft hover:text-primary"
+            >
+              Cart{count > 0 ? ` (${count})` : ""}
+            </Link>
             <div className="mt-2 grid grid-cols-2 gap-2">
               <Link to="/login" onClick={() => setOpen(false)} className="rounded-lg border px-3 py-2 text-center text-sm font-semibold text-primary">Login</Link>
               <Link to="/register" onClick={() => setOpen(false)} className="rounded-lg bg-primary px-3 py-2 text-center text-sm font-semibold text-primary-foreground">Register</Link>
@@ -76,5 +89,22 @@ export function SiteHeader() {
         </div>
       )}
     </header>
+  );
+}
+
+function CartButton({ count }: { count: number }) {
+  return (
+    <Link
+      to="/cart"
+      aria-label={`Cart, ${count} item${count === 1 ? "" : "s"}`}
+      className="relative grid h-10 w-10 shrink-0 place-items-center rounded-lg border text-foreground/80 transition hover:border-primary/40 hover:text-primary"
+    >
+      <ShoppingCart className="h-5 w-5" />
+      {count > 0 && (
+        <span className="absolute -right-1.5 -top-1.5 grid h-5 min-w-5 place-items-center rounded-full bg-accent px-1 text-[10px] font-bold text-accent-foreground">
+          {count}
+        </span>
+      )}
+    </Link>
   );
 }
