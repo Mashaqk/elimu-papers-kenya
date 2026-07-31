@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
-import { FileText, CheckCircle2, Download } from "lucide-react";
+import { FileText, CheckCircle2, Download, Check, Plus } from "lucide-react";
+import { useCart } from "@/lib/cart";
 import type { Resource } from "@/data/catalog";
 import { GRADES, SUBJECTS } from "@/data/catalog";
 import { formatKES } from "@/lib/format";
@@ -7,6 +8,8 @@ import { formatKES } from "@/lib/format";
 export function ResourceCard({ r }: { r: Resource }) {
   const grade = GRADES.find((g) => g.slug === r.gradeSlug);
   const subject = SUBJECTS.find((s) => s.slug === r.subjectSlug);
+  const { has, toggle } = useCart();
+  const inCart = has(r.id);
   return (
     <article className="group flex h-full flex-col overflow-hidden rounded-2xl border bg-card shadow-card transition-all duration-200 hover:-translate-y-1 hover:shadow-lift">
       <div className="relative flex items-center justify-between bg-gradient-to-br from-primary to-primary/85 px-5 py-4 text-primary-foreground">
@@ -46,13 +49,23 @@ export function ResourceCard({ r }: { r: Resource }) {
             <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">Price</p>
             <p className="font-display text-xl font-bold text-primary">{formatKES(r.priceKES)}</p>
           </div>
-          <Link
-            to="/resource/$id"
-            params={{ id: r.id }}
-            className="inline-flex items-center gap-1.5 rounded-lg bg-secondary px-4 py-2 text-sm font-semibold text-secondary-foreground shadow-card transition hover:bg-secondary/90"
-          >
-            <Download className="h-4 w-4" /> Buy Now
-          </Link>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => toggle(r.id)}
+              aria-label={inCart ? `Remove ${r.title} from cart` : `Add ${r.title} to cart`}
+              className={`inline-flex items-center gap-1.5 rounded-lg border px-3 py-2 text-sm font-semibold transition ${inCart ? "border-primary bg-primary-soft text-primary" : "text-foreground/80 hover:border-primary/40 hover:text-primary"}`}
+            >
+              {inCart ? <Check className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+              {inCart ? "Added" : "Add"}
+            </button>
+            <Link
+              to="/resource/$id"
+              params={{ id: r.id }}
+              className="inline-flex items-center gap-1.5 rounded-lg bg-secondary px-4 py-2 text-sm font-semibold text-secondary-foreground shadow-card transition hover:bg-secondary/90"
+            >
+              <Download className="h-4 w-4" /> Buy Now
+            </Link>
+          </div>
         </div>
       </div>
     </article>

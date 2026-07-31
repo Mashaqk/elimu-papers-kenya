@@ -13,6 +13,7 @@ import { reportLovableError } from "../lib/lovable-error-reporting";
 import { SiteHeader } from "@/components/site/site-header";
 import { SiteFooter } from "@/components/site/site-footer";
 import { Toaster } from "@/components/ui/sonner";
+import { CartProvider } from "@/lib/cart";
 
 function NotFoundComponent() {
   return (
@@ -111,13 +112,15 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <div className="flex min-h-screen flex-col bg-background">
-        <SiteHeader />
-        <main className="flex-1">
-          <Outlet />
-        </main>
-        <SiteFooter />
-      </div>
+      <CartProvider>
+        <div className="flex min-h-screen flex-col bg-background">
+          <SiteHeader />
+          <main className="flex-1">
+            <Outlet />
+          </main>
+          <SiteFooter />
+        </div>
+      </CartProvider>
       <Toaster />
     </QueryClientProvider>
   );
