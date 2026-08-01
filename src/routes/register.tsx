@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { GraduationCap } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { lovable } from "@/integrations/lovable";
 import { useAuth } from "@/lib/auth";
 
 export const Route = createFileRoute("/register")({
@@ -59,13 +58,6 @@ function RegisterPage() {
     navigate({ to: "/dashboard" });
   }
 
-  async function google() {
-    try {
-      await lovable.auth.signInWithOAuth("google", { redirect_uri: window.location.origin });
-    } catch (error) {
-      toast.error("Google sign-in failed", { description: error instanceof Error ? error.message : undefined });
-    }
-  }
 
   return (
     <section className="mx-auto grid min-h-[70vh] max-w-md items-center px-4 py-12 sm:px-6">
@@ -90,9 +82,6 @@ function RegisterPage() {
                 {busy ? "Creating…" : "Create account"}
               </button>
             </form>
-            <button onClick={google} className="mt-3 inline-flex w-full items-center justify-center rounded-lg border px-4 py-2.5 text-sm font-semibold transition hover:border-primary/40 hover:text-primary">
-              Continue with Google
-            </button>
           </>
         )}
 
