@@ -5,6 +5,11 @@ import { CreditCard, ShoppingCart, Smartphone, Trash2 } from "lucide-react";
 import { GRADES, SUBJECTS } from "@/data/catalog";
 import { formatKES } from "@/lib/format";
 import { useCart } from "@/lib/cart";
+import { useAuth } from "@/lib/auth";
+import { createPurchases } from "@/lib/purchases.functions";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
+import { useNavigate } from "@tanstack/react-router";
 
 const METHODS = [
   { id: "mpesa", label: "M-PESA", note: "Primary", icon: Smartphone },
@@ -30,6 +35,23 @@ export const Route = createFileRoute("/cart")({
 function CartPage() {
   const { items, total, remove, clear } = useCart();
   const [method, setMethod] = useState("mpesa");
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const buy = useServerFn(createPurchases);
+
+  const checkout = useMutation({
+    mutationFn: () => buy({ data: { resourceIds: items.map((i) => i.id), method } }),
+    onSuccess: (result) => {
+      clear();
+      queryClient.invalidateQueries({ queryKey: ["purchases"] });
+      toast.success(`${result.count} paper${result.count === 1 ? "" : "s"} purchased`, {
+        description: "They are now in your dashboard, ready to download.",
+      });
+      navigate({ to: "/dashboard" });
+    },
+    onError: (error: Error) => toast.error("Payment failed", { description: error.message }),
+  });
 
   return (
     <section className="mx-auto max-w-5xl px-4 py-10 sm:px-6 lg:px-8">
@@ -110,16 +132,22 @@ function CartPage() {
                 })}
               </div>
 
-              <button
-                onClick={() =>
-                  toast.info("Checkout coming soon", {
-                    description: "M-PESA payments will activate once the payment provider is connected.",
-                  })
-                }
-                className="mt-5 w-full rounded-xl bg-secondary px-5 py-3 font-semibold text-secondary-foreground shadow-card transition hover:bg-secondary/90"
-              >
-                Proceed to Payment
-              </button>
+              {user ? (
+                <button
+                  onClick={() => checkout.mutate()}
+                  disabled={checkout.isPending}
+                  className="mt-5 w-full rounded-xl bg-secondary px-5 py-3 font-semibold text-secondary-foreground shadow-card transition hover:bg-secondary/90 disabled:opacity-60"
+                >
+                  {checkout.isPending ? "Processing…" : "Proceed to Payment"}
+                </button>
+              ) : (
+                <Link
+                  to="/login"
+                  className="mt-5 block w-full rounded-xl bg-primary px-5 py-3 text-center font-semibold text-primary-foreground shadow-card transition hover:bg-primary/90"
+                >
+                  Log in to pay
+                </Link>
+              )}
               <button onClick={clear} className="mt-3 w-full text-xs font-semibold text-muted-foreground hover:text-destructive">
                 Clear cart
               </button>

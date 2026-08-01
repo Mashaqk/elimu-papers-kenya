@@ -1,6 +1,9 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { GraduationCap } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/lib/auth";
 
 export const Route = createFileRoute("/login")({
   head: () => ({
@@ -9,14 +12,40 @@ export const Route = createFileRoute("/login")({
       { name: "description", content: "Log in to your ELIMUPEPE account to access purchased papers and revision materials." },
       { property: "og:title", content: "Login — ELIMUPEPE" },
       { property: "og:description", content: "Log in to your ELIMUPEPE account." },
-      { property: "og:url", content: "/login" },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
-    links: [{ rel: "canonical", href: "/login" }],
   }),
   component: LoginPage,
 });
 
 function LoginPage() {
+  const navigate = useNavigate();
+  const { user, loading } = useAuth();
+  const [busy, setBusy] = useState(false);
+
+  useEffect(() => {
+    if (!loading && user) navigate({ to: "/dashboard", replace: true });
+  }, [user, loading, navigate]);
+
+  async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    const form = new FormData(e.currentTarget);
+    setBusy(true);
+    const { error } = await supabase.auth.signInWithPassword({
+      email: String(form.get("email") ?? "").trim(),
+      password: String(form.get("password") ?? ""),
+    });
+    setBusy(false);
+    if (error) {
+      toast.error("Could not log in", { description: error.message });
+      return;
+    }
+    toast.success("Welcome back!");
+    navigate({ to: "/dashboard" });
+  }
+
+
   return (
     <section className="mx-auto grid min-h-[70vh] max-w-md items-center px-4 py-12 sm:px-6">
       <div className="rounded-2xl border bg-card p-8 shadow-card">
@@ -24,17 +53,14 @@ function LoginPage() {
         <h1 className="mt-4 font-display text-2xl font-bold">Welcome back</h1>
         <p className="mt-1 text-sm text-muted-foreground">Log in to access your purchased papers.</p>
 
-        <form
-          className="mt-6 space-y-3"
-          onSubmit={(e) => {
-            e.preventDefault();
-            toast.info("Accounts coming soon", { description: "Enable Lovable Cloud to activate real logins." });
-          }}
-        >
+        <form className="mt-6 space-y-3" onSubmit={onSubmit}>
           <Input label="Email" name="email" type="email" required />
-          <Input label="Password" name="password" type="password" required />
-          <button className="inline-flex w-full items-center justify-center rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground shadow-card transition hover:bg-primary/90">Log in</button>
+          <Input label="Password" name="password" type="password" required minLength={6} />
+          <button disabled={busy} className="inline-flex w-full items-center justify-center rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground shadow-card transition hover:bg-primary/90 disabled:opacity-60">
+            {busy ? "Logging in…" : "Log in"}
+          </button>
         </form>
+
         <p className="mt-4 text-sm text-muted-foreground">
           New to ELIMUPEPE? <Link to="/register" className="font-semibold text-primary hover:underline">Create an account</Link>
         </p>

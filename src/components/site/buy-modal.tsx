@@ -1,9 +1,14 @@
 import { useState } from "react";
+import { Link, useNavigate } from "@tanstack/react-router";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { Smartphone, CreditCard, CheckCircle2 } from "lucide-react";
 import type { Resource } from "@/data/catalog";
 import { formatKES } from "@/lib/format";
+import { useAuth } from "@/lib/auth";
+import { createPurchases } from "@/lib/purchases.functions";
 
 const METHODS = [
   { id: "mpesa", label: "M-PESA", note: "Primary", icon: Smartphone },
@@ -22,6 +27,21 @@ export function BuyModal({
   onOpenChange: (v: boolean) => void;
 }) {
   const [method, setMethod] = useState("mpesa");
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const buy = useServerFn(createPurchases);
+
+  const purchase = useMutation({
+    mutationFn: () => buy({ data: { resourceIds: [resource.id], method } }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["purchases"] });
+      onOpenChange(false);
+      toast.success("Purchase recorded", { description: "Find it in your dashboard under purchased papers." });
+      navigate({ to: "/dashboard" });
+    },
+    onError: (error: Error) => toast.error("Purchase failed", { description: error.message }),
+  });
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -70,18 +90,25 @@ export function BuyModal({
           </div>
         </div>
 
-        <button
-          onClick={() =>
-            toast.info("Checkout coming soon", {
-              description: "Enable Lovable Cloud and M-PESA to activate real payments.",
-            })
-          }
-          className="mt-2 inline-flex w-full items-center justify-center rounded-lg bg-secondary px-4 py-3 font-semibold text-secondary-foreground shadow-card transition hover:bg-secondary/90"
-        >
-          Complete Purchase
-        </button>
+        {user ? (
+          <button
+            onClick={() => purchase.mutate()}
+            disabled={purchase.isPending}
+            className="mt-2 inline-flex w-full items-center justify-center rounded-lg bg-secondary px-4 py-3 font-semibold text-secondary-foreground shadow-card transition hover:bg-secondary/90 disabled:opacity-60"
+          >
+            {purchase.isPending ? "Processing…" : "Complete Purchase"}
+          </button>
+        ) : (
+          <Link
+            to="/login"
+            onClick={() => onOpenChange(false)}
+            className="mt-2 inline-flex w-full items-center justify-center rounded-lg bg-primary px-4 py-3 font-semibold text-primary-foreground shadow-card transition hover:bg-primary/90"
+          >
+            Log in to pay
+          </Link>
+        )}
         <p className="text-center text-xs text-muted-foreground">
-          Payment is confirmed automatically. Download becomes available immediately.
+          Payment is confirmed automatically. Download becomes available immediately in your dashboard.
         </p>
       </DialogContent>
     </Dialog>
