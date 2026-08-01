@@ -1,4 +1,6 @@
 import { Link } from "@tanstack/react-router";
+import { useState } from "react";
+import { BuyModal } from "@/components/site/buy-modal";
 import { FileText, CheckCircle2, Download, Check, Plus } from "lucide-react";
 import { useCart } from "@/lib/cart";
 import type { Resource } from "@/data/catalog";
@@ -10,6 +12,7 @@ export function ResourceCard({ r }: { r: Resource }) {
   const subject = SUBJECTS.find((s) => s.slug === r.subjectSlug);
   const { has, toggle } = useCart();
   const inCart = has(r.id);
+  const [buyOpen, setBuyOpen] = useState(false);
   return (
     <article className="group flex h-full flex-col overflow-hidden rounded-2xl border bg-card shadow-card transition-all duration-200 hover:-translate-y-1 hover:shadow-lift">
       <div className="relative flex items-center justify-between bg-gradient-to-br from-primary to-primary/85 px-5 py-4 text-primary-foreground">
@@ -58,16 +61,16 @@ export function ResourceCard({ r }: { r: Resource }) {
               {inCart ? <Check className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
               {inCart ? "Added" : "Add"}
             </button>
-            <Link
-              to="/resource/$id"
-              params={{ id: r.id }}
+            <button
+              onClick={() => setBuyOpen(true)}
               className="inline-flex items-center gap-1.5 rounded-lg bg-secondary px-4 py-2 text-sm font-semibold text-secondary-foreground shadow-card transition hover:bg-secondary/90"
             >
               <Download className="h-4 w-4" /> Buy Now
-            </Link>
+            </button>
           </div>
         </div>
       </div>
+      <BuyModal resource={r} open={buyOpen} onOpenChange={setBuyOpen} />
     </article>
   );
 }
