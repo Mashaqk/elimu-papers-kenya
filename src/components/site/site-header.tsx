@@ -2,6 +2,10 @@ import { Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { Menu, X, GraduationCap, ShoppingCart } from "lucide-react";
 import { useCart } from "@/lib/cart";
+import { useAuth } from "@/lib/auth";
+import { supabase } from "@/integrations/supabase/client";
+import { useNavigate } from "@tanstack/react-router";
+import { useQueryClient } from "@tanstack/react-query";
 
 const NAV = [
   { to: "/", label: "Home" },
@@ -16,6 +20,17 @@ const NAV = [
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
   const { count } = useCart();
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+
+  async function signOut() {
+    setOpen(false);
+    await queryClient.cancelQueries();
+    queryClient.clear();
+    await supabase.auth.signOut();
+    navigate({ to: "/login", replace: true });
+  }
 
   return (
     <header className="sticky top-0 z-40 border-b bg-background/85 backdrop-blur">
@@ -43,8 +58,17 @@ export function SiteHeader() {
           ))}
           <div className="ml-2 flex items-center gap-2">
             <CartButton count={count} />
-            <Link to="/login" className="rounded-lg px-3 py-2 text-sm font-semibold text-primary hover:bg-primary-soft">Login</Link>
-            <Link to="/register" className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground shadow-card transition hover:bg-primary/90">Register</Link>
+            {user ? (
+              <>
+                <Link to="/dashboard" className="rounded-lg px-3 py-2 text-sm font-semibold text-primary hover:bg-primary-soft">Dashboard</Link>
+                <button onClick={signOut} className="rounded-lg border px-4 py-2 text-sm font-semibold text-foreground/80 transition hover:border-primary/40 hover:text-primary">Sign out</button>
+              </>
+            ) : (
+              <>
+                <Link to="/login" className="rounded-lg px-3 py-2 text-sm font-semibold text-primary hover:bg-primary-soft">Login</Link>
+                <Link to="/register" className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground shadow-card transition hover:bg-primary/90">Register</Link>
+              </>
+            )}
           </div>
         </nav>
 
@@ -82,8 +106,17 @@ export function SiteHeader() {
               Cart{count > 0 ? ` (${count})` : ""}
             </Link>
             <div className="mt-2 grid grid-cols-2 gap-2">
-              <Link to="/login" onClick={() => setOpen(false)} className="rounded-lg border px-3 py-2 text-center text-sm font-semibold text-primary">Login</Link>
-              <Link to="/register" onClick={() => setOpen(false)} className="rounded-lg bg-primary px-3 py-2 text-center text-sm font-semibold text-primary-foreground">Register</Link>
+              {user ? (
+                <>
+                  <Link to="/dashboard" onClick={() => setOpen(false)} className="rounded-lg border px-3 py-2 text-center text-sm font-semibold text-primary">Dashboard</Link>
+                  <button onClick={signOut} className="rounded-lg bg-primary px-3 py-2 text-center text-sm font-semibold text-primary-foreground">Sign out</button>
+                </>
+              ) : (
+                <>
+                  <Link to="/login" onClick={() => setOpen(false)} className="rounded-lg border px-3 py-2 text-center text-sm font-semibold text-primary">Login</Link>
+                  <Link to="/register" onClick={() => setOpen(false)} className="rounded-lg bg-primary px-3 py-2 text-center text-sm font-semibold text-primary-foreground">Register</Link>
+                </>
+              )}
             </div>
           </div>
         </div>
