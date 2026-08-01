@@ -1,4 +1,3 @@
-import { Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { BuyModal } from "@/components/site/buy-modal";
 import { FileText, CheckCircle2, Download, Check, Plus } from "lucide-react";
