@@ -15,14 +15,15 @@ import { Route as RegisterRouteImport } from './routes/register'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as LatestPapersRouteImport } from './routes/latest-papers'
 import { Route as JuniorSchoolRouteImport } from './routes/junior-school'
-import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as CartRouteImport } from './routes/cart'
 import { Route as AboutRouteImport } from './routes/about'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as SubjectsSubjectRouteImport } from './routes/subjects.$subject'
 import { Route as ResourceIdRouteImport } from './routes/resource.$id'
 import { Route as GradeGradeRouteImport } from './routes/grade.$grade'
+import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 
 const SubjectsRoute = SubjectsRouteImport.update({
   id: '/subjects',
@@ -54,11 +55,6 @@ const JuniorSchoolRoute = JuniorSchoolRouteImport.update({
   path: '/junior-school',
   getParentRoute: () => rootRouteImport,
 } as any)
-const DashboardRoute = DashboardRouteImport.update({
-  id: '/dashboard',
-  path: '/dashboard',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const ContactRoute = ContactRouteImport.update({
   id: '/contact',
   path: '/contact',
@@ -72,6 +68,10 @@ const CartRoute = CartRouteImport.update({
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
   path: '/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -94,19 +94,24 @@ const GradeGradeRoute = GradeGradeRouteImport.update({
   path: '/grade/$grade',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/cart': typeof CartRoute
   '/contact': typeof ContactRoute
-  '/dashboard': typeof DashboardRoute
   '/junior-school': typeof JuniorSchoolRoute
   '/latest-papers': typeof LatestPapersRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
   '/senior-school': typeof SeniorSchoolRoute
   '/subjects': typeof SubjectsRouteWithChildren
+  '/dashboard': typeof AuthenticatedDashboardRoute
   '/grade/$grade': typeof GradeGradeRoute
   '/resource/$id': typeof ResourceIdRoute
   '/subjects/$subject': typeof SubjectsSubjectRoute
@@ -116,13 +121,13 @@ export interface FileRoutesByTo {
   '/about': typeof AboutRoute
   '/cart': typeof CartRoute
   '/contact': typeof ContactRoute
-  '/dashboard': typeof DashboardRoute
   '/junior-school': typeof JuniorSchoolRoute
   '/latest-papers': typeof LatestPapersRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
   '/senior-school': typeof SeniorSchoolRoute
   '/subjects': typeof SubjectsRouteWithChildren
+  '/dashboard': typeof AuthenticatedDashboardRoute
   '/grade/$grade': typeof GradeGradeRoute
   '/resource/$id': typeof ResourceIdRoute
   '/subjects/$subject': typeof SubjectsSubjectRoute
@@ -130,16 +135,17 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/about': typeof AboutRoute
   '/cart': typeof CartRoute
   '/contact': typeof ContactRoute
-  '/dashboard': typeof DashboardRoute
   '/junior-school': typeof JuniorSchoolRoute
   '/latest-papers': typeof LatestPapersRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
   '/senior-school': typeof SeniorSchoolRoute
   '/subjects': typeof SubjectsRouteWithChildren
+  '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/grade/$grade': typeof GradeGradeRoute
   '/resource/$id': typeof ResourceIdRoute
   '/subjects/$subject': typeof SubjectsSubjectRoute
@@ -151,13 +157,13 @@ export interface FileRouteTypes {
     | '/about'
     | '/cart'
     | '/contact'
-    | '/dashboard'
     | '/junior-school'
     | '/latest-papers'
     | '/login'
     | '/register'
     | '/senior-school'
     | '/subjects'
+    | '/dashboard'
     | '/grade/$grade'
     | '/resource/$id'
     | '/subjects/$subject'
@@ -167,29 +173,30 @@ export interface FileRouteTypes {
     | '/about'
     | '/cart'
     | '/contact'
-    | '/dashboard'
     | '/junior-school'
     | '/latest-papers'
     | '/login'
     | '/register'
     | '/senior-school'
     | '/subjects'
+    | '/dashboard'
     | '/grade/$grade'
     | '/resource/$id'
     | '/subjects/$subject'
   id:
     | '__root__'
     | '/'
+    | '/_authenticated'
     | '/about'
     | '/cart'
     | '/contact'
-    | '/dashboard'
     | '/junior-school'
     | '/latest-papers'
     | '/login'
     | '/register'
     | '/senior-school'
     | '/subjects'
+    | '/_authenticated/dashboard'
     | '/grade/$grade'
     | '/resource/$id'
     | '/subjects/$subject'
@@ -197,10 +204,10 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AboutRoute: typeof AboutRoute
   CartRoute: typeof CartRoute
   ContactRoute: typeof ContactRoute
-  DashboardRoute: typeof DashboardRoute
   JuniorSchoolRoute: typeof JuniorSchoolRoute
   LatestPapersRoute: typeof LatestPapersRoute
   LoginRoute: typeof LoginRoute
@@ -255,13 +262,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof JuniorSchoolRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/dashboard': {
-      id: '/dashboard'
-      path: '/dashboard'
-      fullPath: '/dashboard'
-      preLoaderRoute: typeof DashboardRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/contact': {
       id: '/contact'
       path: '/contact'
@@ -281,6 +281,13 @@ declare module '@tanstack/react-router' {
       path: '/about'
       fullPath: '/about'
       preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -311,8 +318,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof GradeGradeRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/dashboard': {
+      id: '/_authenticated/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof AuthenticatedDashboardRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
+
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
 
 interface SubjectsRouteChildren {
   SubjectsSubjectRoute: typeof SubjectsSubjectRoute
@@ -328,10 +353,10 @@ const SubjectsRouteWithChildren = SubjectsRoute._addFileChildren(
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AboutRoute: AboutRoute,
   CartRoute: CartRoute,
   ContactRoute: ContactRoute,
-  DashboardRoute: DashboardRoute,
   JuniorSchoolRoute: JuniorSchoolRoute,
   LatestPapersRoute: LatestPapersRoute,
   LoginRoute: LoginRoute,
