@@ -83,39 +83,11 @@ export type Resource = {
   includes: string[];
   createdAt: string; // ISO
   popular?: boolean;
+  published?: boolean;
+  hasPaper?: boolean;
+  hasScheme?: boolean;
 };
 
-// Sample catalog covering the three explicit examples + a spread across grades/subjects.
-export const RESOURCES: Resource[] = [
-  { id: "g7-math-assign-t1", title: "Grade 7 Mathematics Assignment", gradeSlug: "grade-7", subjectSlug: "mathematics", type: "Assignment", term: "Term 1", priceKES: 100, includes: ["Assignment PDF", "Marking Scheme", "Instant Download"], createdAt: "2026-06-14", popular: true },
-  { id: "g8-math-assign-t2", title: "Grade 8 Mathematics Assignment", gradeSlug: "grade-8", subjectSlug: "mathematics", type: "Assignment", term: "Term 2", priceKES: 100, includes: ["Assignment PDF", "Marking Scheme", "Instant Download"], createdAt: "2026-07-02", popular: true },
-  { id: "g10-chem-cat-t1", title: "Grade 10 Chemistry CAT", gradeSlug: "grade-10", subjectSlug: "chemistry", type: "CAT", term: "Term 1", priceKES: 150, includes: ["CAT Paper", "Marking Scheme"], createdAt: "2026-07-12", popular: true },
-  { id: "g12-phy-endterm-t2", title: "Grade 12 Physics End Term Exam", gradeSlug: "grade-12", subjectSlug: "physics", type: "End-Term Exam", term: "Term 2", priceKES: 250, includes: ["Examination Paper", "Marking Scheme", "Suggested Answers"], createdAt: "2026-07-18", popular: true },
-  { id: "g9-eng-midterm-t2", title: "Grade 9 English Mid-Term Exam", gradeSlug: "grade-9", subjectSlug: "english", type: "Mid-Term Exam", term: "Term 2", priceKES: 180, includes: ["Examination Paper", "Marking Scheme"], createdAt: "2026-07-10" },
-  { id: "g11-bio-mock-t3", title: "Grade 11 Biology Mock Exam", gradeSlug: "grade-11", subjectSlug: "biology", type: "Mock Exam", term: "Term 3", priceKES: 220, includes: ["Mock Paper 1 & 2", "Marking Schemes"], createdAt: "2026-07-20" },
-  { id: "g7-sci-weekly-t1", title: "Grade 7 Integrated Science Weekly Assessment", gradeSlug: "grade-7", subjectSlug: "integrated-science", type: "Weekly Assessment", term: "Term 1", priceKES: 80, includes: ["Assessment PDF", "Marking Scheme"], createdAt: "2026-05-30" },
-  { id: "g8-kis-monthly-t2", title: "Grade 8 Kiswahili Monthly Test", gradeSlug: "grade-8", subjectSlug: "kiswahili", type: "Monthly Test", term: "Term 2", priceKES: 120, includes: ["Karatasi ya Mtihani", "Mwongozo wa Kusahihisha"], createdAt: "2026-06-25" },
-  { id: "g9-ss-topical", title: "Grade 9 Social Studies Topical Questions", gradeSlug: "grade-9", subjectSlug: "social-studies", type: "Topical Questions", term: "Term 2", priceKES: 150, includes: ["Topical PDF", "Marking Scheme"], createdAt: "2026-06-18" },
-  { id: "g10-coremath-endterm-t1", title: "Grade 10 Core Mathematics End-Term Exam", gradeSlug: "grade-10", subjectSlug: "core-mathematics", type: "End-Term Exam", term: "Term 1", priceKES: 200, includes: ["Paper 1", "Paper 2", "Marking Schemes"], createdAt: "2026-04-22" },
-  { id: "g11-essmath-cat-t2", title: "Grade 11 Essential Mathematics CAT", gradeSlug: "grade-11", subjectSlug: "essential-mathematics", type: "CAT", term: "Term 2", priceKES: 150, includes: ["CAT Paper", "Marking Scheme"], createdAt: "2026-07-06" },
-  { id: "g11-chem-holiday", title: "Grade 11 Chemistry Holiday Assignment", gradeSlug: "grade-11", subjectSlug: "chemistry", type: "Holiday Assignment", term: "Term 2", priceKES: 130, includes: ["Assignment PDF", "Marking Scheme"], createdAt: "2026-07-05" },
-  { id: "g12-geo-past", title: "Grade 12 Geography Past Paper Pack", gradeSlug: "grade-12", subjectSlug: "geography", type: "Past Paper", term: "Term 3", priceKES: 260, includes: ["10 Past Papers", "Full Marking Schemes"], createdAt: "2026-07-22", popular: true },
-  { id: "g8-agri-cat-t1", title: "Grade 8 Agriculture CAT", gradeSlug: "grade-8", subjectSlug: "agriculture", type: "CAT", term: "Term 1", priceKES: 120, includes: ["CAT Paper", "Marking Scheme"], createdAt: "2026-05-14" },
-  { id: "g10-bs-revision", title: "Grade 10 Business Studies Revision Paper", gradeSlug: "grade-10", subjectSlug: "business-studies", type: "Revision Paper", term: "Term 3", priceKES: 170, includes: ["Revision Paper", "Marking Scheme"], createdAt: "2026-07-16" },
-  { id: "g9-pretech-cat", title: "Grade 9 Pre-Technical Studies CAT", gradeSlug: "grade-9", subjectSlug: "pre-technical-studies", type: "CAT", term: "Term 2", priceKES: 140, includes: ["CAT Paper", "Marking Scheme"], createdAt: "2026-07-08" },
-  { id: "g7-arts-assign", title: "Grade 7 Creative Arts Assignment", gradeSlug: "grade-7", subjectSlug: "creative-arts", type: "Assignment", term: "Term 1", priceKES: 90, includes: ["Assignment PDF", "Marking Scheme"], createdAt: "2026-06-05" },
-  { id: "g10-elec-cat", title: "Grade 10 Electricity CAT", gradeSlug: "grade-10", subjectSlug: "electricity", type: "CAT", term: "Term 2", priceKES: 150, includes: ["CAT Paper", "Marking Scheme"], createdAt: "2026-07-11" },
-  { id: "g11-powermech-midterm", title: "Grade 11 Power Mechanics Mid-Term Exam", gradeSlug: "grade-11", subjectSlug: "power-mechanics", type: "Mid-Term Exam", term: "Term 2", priceKES: 190, includes: ["Examination Paper", "Marking Scheme"], createdAt: "2026-07-13" },
-  { id: "g12-aviation-mock", title: "Grade 12 Aviation Mock Exam", gradeSlug: "grade-12", subjectSlug: "aviation", type: "Mock Exam", term: "Term 3", priceKES: 240, includes: ["Mock Paper", "Marking Scheme", "Suggested Answers"], createdAt: "2026-07-21" },
-  { id: "g10-media-assign", title: "Grade 10 Media Technology Assignment", gradeSlug: "grade-10", subjectSlug: "media-technology", type: "Assignment", term: "Term 1", priceKES: 130, includes: ["Assignment PDF", "Marking Scheme"], createdAt: "2026-06-28" },
-  { id: "g11-build-endterm", title: "Grade 11 Building and Construction End-Term Exam", gradeSlug: "grade-11", subjectSlug: "building-and-construction", type: "End-Term Exam", term: "Term 3", priceKES: 220, includes: ["Examination Paper", "Marking Scheme"], createdAt: "2026-07-17" },
-  { id: "g12-csl-project", title: "Grade 12 Community Service Learning Revision Paper", gradeSlug: "grade-12", subjectSlug: "community-service-learning", type: "Revision Paper", term: "Term 2", priceKES: 160, includes: ["Project Guide", "Sample Report", "Marking Scheme"], createdAt: "2026-07-23" },
-  { id: "g12-his-mock", title: "Grade 12 History Mock Exam", gradeSlug: "grade-12", subjectSlug: "history", type: "Mock Exam", term: "Term 3", priceKES: 240, includes: ["Mock Paper", "Marking Scheme", "Suggested Answers"], createdAt: "2026-07-19" },
-  { id: "g7-cre-weekly", title: "Grade 7 CRE Weekly Assessment", gradeSlug: "grade-7", subjectSlug: "cre", type: "Weekly Assessment", term: "Term 2", priceKES: 80, includes: ["Assessment PDF", "Marking Scheme"], createdAt: "2026-06-11" },
-  { id: "g11-ire-midterm", title: "Grade 11 IRE Mid-Term Exam", gradeSlug: "grade-11", subjectSlug: "ire", type: "Mid-Term Exam", term: "Term 2", priceKES: 180, includes: ["Examination Paper", "Marking Scheme"], createdAt: "2026-07-14" },
-  { id: "g10-phy-topical", title: "Grade 10 Physics Topical Questions", gradeSlug: "grade-10", subjectSlug: "physics", type: "Topical Questions", term: "Term 1", priceKES: 160, includes: ["Topical PDF", "Marking Scheme"], createdAt: "2026-05-02" },
-  { id: "g12-eng-endterm", title: "Grade 12 English End-Term Exam", gradeSlug: "grade-12", subjectSlug: "english", type: "End-Term Exam", term: "Term 2", priceKES: 250, includes: ["Paper 1", "Paper 2", "Paper 3", "Marking Schemes"], createdAt: "2026-07-24", popular: true },
-];
 
 export const TESTIMONIALS = [
   { name: "Achieng' O.", role: "Grade 10 Learner, Kisumu", quote: "The marking schemes are so clear. I revise, check my answers, and I actually understand where I went wrong." },
