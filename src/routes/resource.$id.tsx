@@ -1,46 +1,56 @@
-import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { ArrowLeft, Check, CheckCircle2, Download, FileText, Plus, ShieldCheck, Smartphone } from "lucide-react";
 import { useCart } from "@/lib/cart";
-import { GRADES, RESOURCES, SUBJECTS } from "@/data/catalog";
+import { GRADES, SUBJECTS } from "@/data/catalog";
+import { useResources } from "@/lib/use-resources";
 import { formatKES } from "@/lib/format";
 import { BuyModal } from "@/components/site/buy-modal";
 import { ResourceCard } from "@/components/site/resource-card";
 import { SectionHeading } from "@/components/site/section-heading";
 
 export const Route = createFileRoute("/resource/$id")({
-  loader: ({ params }) => {
-    const resource = RESOURCES.find((r) => r.id === params.id);
-    if (!resource) throw notFound();
-    return { resource };
-  },
-  head: ({ loaderData }) => {
-    if (!loaderData) return { meta: [{ title: "Resource not found — ELIMUPEPE" }, { name: "robots", content: "noindex" }] };
-    const { resource } = loaderData;
-    return {
-      meta: [
-        { title: `${resource.title} — ELIMUPEPE` },
-        { name: "description", content: `${resource.title}. ${resource.includes.join(", ")}. ${formatKES(resource.priceKES)}.` },
-        { property: "og:title", content: `${resource.title} — ELIMUPEPE` },
-        { property: "og:description", content: `${resource.title}. Includes ${resource.includes.join(", ")}.` },
-        { property: "og:type", content: "product" },
-        { property: "og:url", content: `/resource/${resource.id}` },
-      ],
-      links: [{ rel: "canonical", href: `/resource/${resource.id}` }],
-    };
-  },
+  head: ({ params }) => ({
+    meta: [
+      { title: "Paper details — ELIMUPEPE" },
+      { name: "description", content: "Paper details, what's included and pricing on ELIMUPEPE." },
+      { property: "og:title", content: "Paper details — ELIMUPEPE" },
+      { property: "og:description", content: "Buy this CBC paper with its marking scheme and download instantly." },
+      { property: "og:type", content: "product" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { property: "og:url", content: `/resource/${params.id}` },
+    ],
+    links: [{ rel: "canonical", href: `/resource/${params.id}` }],
+  }),
   component: ResourcePage,
 });
 
 function ResourcePage() {
-  const { resource } = Route.useLoaderData();
+  const { id } = Route.useParams();
+  const { resources, isLoading } = useResources();
+  const resource = resources.find((r) => r.id === id);
   const grade = GRADES.find((g) => g.slug === resource.gradeSlug);
   const subject = SUBJECTS.find((s) => s.slug === resource.subjectSlug);
-  const related = RESOURCES.filter((r) => r.id !== resource.id && (r.subjectSlug === resource.subjectSlug || r.gradeSlug === resource.gradeSlug)).slice(0, 3);
+  const related = resource
+    ? resources.filter((r) => r.id !== resource.id && (r.subjectSlug === resource.subjectSlug || r.gradeSlug === resource.gradeSlug)).slice(0, 3)
+    : [];
 
   const [open, setOpen] = useState(false);
   const { has, toggle } = useCart();
-  const inCart = has(resource.id);
+  const inCart = resource ? has(resource.id) : false;
+
+  if (!resource) {
+    return (
+      <section className="mx-auto max-w-3xl px-4 py-24 text-center sm:px-6">
+        <h1 className="font-display text-2xl font-bold">{isLoading ? "Loading paper…" : "Paper not found"}</h1>
+        {!isLoading && (
+          <p className="mt-3 text-sm text-muted-foreground">
+            This paper may have been removed. <Link to="/latest-papers" className="font-semibold text-primary hover:underline">Browse all papers</Link>
+          </p>
+        )}
+      </section>
+    );
+  }
 
   return (
     <>
