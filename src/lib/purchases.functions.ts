@@ -1,6 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import { RESOURCES } from "@/data/catalog";
 
 const METHODS = ["mpesa", "airtel", "visa", "mastercard"] as const;
 
@@ -26,19 +25,23 @@ export const createPurchases = createServerFn({ method: "POST" })
     return { resourceIds, method };
   })
   .handler(async ({ data, context }) => {
-    const rows = data.resourceIds
-      .map((id) => RESOURCES.find((r) => r.id === id))
-      .filter((r): r is (typeof RESOURCES)[number] => Boolean(r))
-      .map((r) => ({
-        user_id: context.userId,
-        resource_id: r.id,
-        resource_title: r.title,
-        grade_slug: r.gradeSlug,
-        subject_slug: r.subjectSlug,
-        price_kes: r.priceKES,
-        payment_method: data.method,
-        status: "paid",
-      }));
+    const { data: resources, error: readError } = await context.supabase
+      .from("resources")
+      .select("id,title,grade_slug,subject_slug,price_kes")
+      .in("id", data.resourceIds)
+      .eq("published", true);
+    if (readError) throw new Error(readError.message);
+
+    const rows = (resources ?? []).map((r) => ({
+      user_id: context.userId,
+      resource_id: r.id,
+      resource_title: r.title,
+      grade_slug: r.grade_slug,
+      subject_slug: r.subject_slug,
+      price_kes: r.price_kes,
+      payment_method: data.method,
+      status: "paid",
+    }));
 
     if (rows.length === 0) throw new Error("No valid items to purchase");
 
@@ -49,6 +52,7 @@ export const createPurchases = createServerFn({ method: "POST" })
 
     return { count: rows.length, total: rows.reduce((s, r) => s + r.price_kes, 0) };
   });
+
 
 export const recordDownload = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])

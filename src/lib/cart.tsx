@@ -1,5 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
-import { RESOURCES, type Resource } from "@/data/catalog";
+import { type Resource } from "@/data/catalog";
+import { useResources } from "@/lib/use-resources";
+
 
 const STORAGE_KEY = "elimupepe.cart.v1";
 
