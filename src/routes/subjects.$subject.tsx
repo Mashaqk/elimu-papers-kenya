@@ -1,5 +1,6 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { RESOURCES, SUBJECTS } from "@/data/catalog";
+import { SUBJECTS } from "@/data/catalog";
+import { useResources } from "@/lib/use-resources";
 import { ResourceCard } from "@/components/site/resource-card";
 import { SectionHeading } from "@/components/site/section-heading";
 
@@ -28,7 +29,8 @@ export const Route = createFileRoute("/subjects/$subject")({
 
 function SubjectPage() {
   const { subject } = Route.useLoaderData();
-  const resources = RESOURCES.filter((r) => r.subjectSlug === subject.slug);
+  const { resources: all } = useResources();
+  const resources = all.filter((r) => r.subjectSlug === subject.slug);
 
   return (
     <>

@@ -1,5 +1,6 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { GRADES, RESOURCES, SUBJECTS } from "@/data/catalog";
+import { GRADES, SUBJECTS } from "@/data/catalog";
+import { useResources } from "@/lib/use-resources";
 import { ResourceCard } from "@/components/site/resource-card";
 import { SubjectCard } from "@/components/site/subject-card";
 import { SectionHeading } from "@/components/site/section-heading";
@@ -31,7 +32,8 @@ export const Route = createFileRoute("/grade/$grade")({
 
 function GradePage() {
   const { grade } = Route.useLoaderData();
-  const resources = RESOURCES.filter((r) => r.gradeSlug === grade.slug);
+  const { resources: all } = useResources();
+  const resources = all.filter((r) => r.gradeSlug === grade.slug);
   const subjects = SUBJECTS.filter((s) => s.levels.includes(grade.level));
 
   return (

@@ -5,7 +5,9 @@ import { useCart } from "@/lib/cart";
 import { useAuth } from "@/lib/auth";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "@tanstack/react-router";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
+import { getMyRoles } from "@/lib/resources.functions";
 
 const NAV = [
   { to: "/", label: "Home" },
@@ -23,6 +25,14 @@ export function SiteHeader() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const checkRole = useServerFn(getMyRoles);
+  const { data: role } = useQuery({
+    queryKey: ["my-roles"],
+    queryFn: () => checkRole(),
+    enabled: Boolean(user),
+    staleTime: 5 * 60_000,
+  });
+  const isAdmin = Boolean(role?.isAdmin);
 
   async function signOut() {
     setOpen(false);
@@ -61,6 +71,7 @@ export function SiteHeader() {
             {user ? (
               <>
                 <Link to="/dashboard" className="rounded-lg px-3 py-2 text-sm font-semibold text-primary hover:bg-primary-soft">Dashboard</Link>
+                {isAdmin && <Link to="/admin" className="rounded-lg px-3 py-2 text-sm font-semibold text-secondary hover:bg-secondary/10">Admin</Link>}
                 <button onClick={signOut} className="rounded-lg border px-4 py-2 text-sm font-semibold text-foreground/80 transition hover:border-primary/40 hover:text-primary">Sign out</button>
               </>
             ) : (
@@ -109,6 +120,7 @@ export function SiteHeader() {
               {user ? (
                 <>
                   <Link to="/dashboard" onClick={() => setOpen(false)} className="rounded-lg border px-3 py-2 text-center text-sm font-semibold text-primary">Dashboard</Link>
+                  {isAdmin && <Link to="/admin" onClick={() => setOpen(false)} className="rounded-lg border px-3 py-2 text-center text-sm font-semibold text-secondary">Admin</Link>}
                   <button onClick={signOut} className="rounded-lg bg-primary px-3 py-2 text-center text-sm font-semibold text-primary-foreground">Sign out</button>
                 </>
               ) : (

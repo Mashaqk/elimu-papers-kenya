@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { RESOURCES } from "@/data/catalog";
+import { useResources } from "@/lib/use-resources";
 import { ResourceCard } from "@/components/site/resource-card";
 import { SectionHeading } from "@/components/site/section-heading";
 import { SearchFilters, emptyFilters, type Filters } from "@/components/site/search-filters";
@@ -21,10 +21,11 @@ export const Route = createFileRoute("/latest-papers")({
 
 function LatestPapersPage() {
   const [filters, setFilters] = useState<Filters>(emptyFilters);
+  const { resources } = useResources();
 
   const results = useMemo(() => {
     const q = filters.q.trim().toLowerCase();
-    return RESOURCES.filter((r) => {
+    return resources.filter((r) => {
       if (filters.grade && r.gradeSlug !== filters.grade) return false;
       if (filters.subject && r.subjectSlug !== filters.subject) return false;
       if (filters.type && r.type !== filters.type) return false;
@@ -32,7 +33,7 @@ function LatestPapersPage() {
       if (q && !`${r.title} ${r.type} ${r.term}`.toLowerCase().includes(q)) return false;
       return true;
     }).sort((a, b) => b.createdAt.localeCompare(a.createdAt));
-  }, [filters]);
+  }, [filters, resources]);
 
   return (
     <>

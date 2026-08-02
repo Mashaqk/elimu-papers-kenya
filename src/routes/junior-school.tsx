@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { GRADES, SUBJECTS, RESOURCES } from "@/data/catalog";
+import { GRADES, SUBJECTS } from "@/data/catalog";
+import { useResources } from "@/lib/use-resources";
 import { GradeCard } from "@/components/site/grade-card";
 import { SubjectCard } from "@/components/site/subject-card";
 import { ResourceCard } from "@/components/site/resource-card";
@@ -22,7 +23,8 @@ export const Route = createFileRoute("/junior-school")({
 function JuniorSchoolPage() {
   const grades = GRADES.filter((g) => g.level === "junior");
   const subjects = SUBJECTS.filter((s) => s.levels.includes("junior"));
-  const samples = RESOURCES.filter((r) => ["grade-7", "grade-8", "grade-9"].includes(r.gradeSlug)).slice(0, 6);
+  const { resources } = useResources();
+  const samples = resources.filter((r) => ["grade-7", "grade-8", "grade-9"].includes(r.gradeSlug)).slice(0, 6);
   return (
     <>
       <LevelHero eyebrow="Junior School" title="Grade 7, 8 & 9 resources" description="Foundational CBC learning with weekly assessments, monthly tests, CATs, mid-term and end-term examinations." />

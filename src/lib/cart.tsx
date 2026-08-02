@@ -1,5 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
-import { RESOURCES, type Resource } from "@/data/catalog";
+import { type Resource } from "@/data/catalog";
+import { useResources } from "@/lib/use-resources";
+
 
 const STORAGE_KEY = "elimupepe.cart.v1";
 
@@ -19,6 +21,7 @@ const CartContext = createContext<CartContextValue | null>(null);
 
 export function CartProvider({ children }: { children: ReactNode }) {
   const [ids, setIds] = useState<string[]>([]);
+  const { resources } = useResources();
 
   useEffect(() => {
     try {
@@ -50,7 +53,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   const value = useMemo<CartContextValue>(() => {
     const items = ids
-      .map((id) => RESOURCES.find((r) => r.id === id))
+      .map((id) => resources.find((r) => r.id === id))
       .filter((r): r is Resource => Boolean(r));
     return {
       ids,
@@ -63,7 +66,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       toggle,
       clear,
     };
-  }, [ids, add, remove, toggle, clear]);
+  }, [ids, resources, add, remove, toggle, clear]);
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 }
