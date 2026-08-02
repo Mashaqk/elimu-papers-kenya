@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { GRADES, SUBJECTS, RESOURCES } from "@/data/catalog";
+import { GRADES, SUBJECTS } from "@/data/catalog";
+import { useResources } from "@/lib/use-resources";
 import { GradeCard } from "@/components/site/grade-card";
 import { SubjectCard } from "@/components/site/subject-card";
 import { ResourceCard } from "@/components/site/resource-card";
@@ -22,7 +23,8 @@ export const Route = createFileRoute("/senior-school")({
 function SeniorSchoolPage() {
   const grades = GRADES.filter((g) => g.level === "senior");
   const subjects = SUBJECTS.filter((s) => s.levels.includes("senior"));
-  const samples = RESOURCES.filter((r) => ["grade-10", "grade-11", "grade-12"].includes(r.gradeSlug)).slice(0, 6);
+  const { resources } = useResources();
+  const samples = resources.filter((r) => ["grade-10", "grade-11", "grade-12"].includes(r.gradeSlug)).slice(0, 6);
   return (
     <>
       <section className="bg-gradient-to-br from-primary to-[oklch(0.24_0.11_269)] py-16 text-primary-foreground">

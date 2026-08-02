@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, BookOpen, CheckCircle2, Download, GraduationCap, Search, ShieldCheck, Smartphone, Sparkles, Star } from "lucide-react";
-import { GRADES, SUBJECTS, RESOURCES, TESTIMONIALS, FAQS } from "@/data/catalog";
+import { GRADES, SUBJECTS, TESTIMONIALS, FAQS } from "@/data/catalog";
+import { useResources } from "@/lib/use-resources";
 import { GradeCard } from "@/components/site/grade-card";
 import { SubjectCard } from "@/components/site/subject-card";
 import { ResourceCard } from "@/components/site/resource-card";
@@ -22,8 +23,9 @@ export const Route = createFileRoute("/")({
 });
 
 function HomePage() {
-  const latest = [...RESOURCES].sort((a, b) => b.createdAt.localeCompare(a.createdAt)).slice(0, 6);
-  const popular = RESOURCES.filter((r) => r.popular).slice(0, 4);
+  const { resources } = useResources();
+  const latest = [...resources].sort((a, b) => b.createdAt.localeCompare(a.createdAt)).slice(0, 6);
+  const popular = resources.filter((r) => r.popular).slice(0, 4);
 
   return (
     <>
