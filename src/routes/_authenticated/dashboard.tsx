@@ -7,6 +7,7 @@ import { GRADES, SUBJECTS } from "@/data/catalog";
 import { SectionHeading } from "@/components/site/section-heading";
 import { formatKES } from "@/lib/format";
 import { listPurchases, recordDownload } from "@/lib/purchases.functions";
+import { getDownloadLinks } from "@/lib/resources.functions";
 import { useAuth } from "@/lib/auth";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
@@ -29,6 +30,7 @@ function DashboardPage() {
   const queryClient = useQueryClient();
   const fetchPurchases = useServerFn(listPurchases);
   const markDownload = useServerFn(recordDownload);
+  const fetchLinks = useServerFn(getDownloadLinks);
 
   const { data: purchases = [], isLoading } = useQuery({
     queryKey: ["purchases"],
@@ -36,10 +38,15 @@ function DashboardPage() {
   });
 
   const download = useMutation({
-    mutationFn: (purchaseId: string) => markDownload({ data: { purchaseId } }),
-    onSuccess: () => {
+    mutationFn: async (purchaseId: string) => {
+      const { links } = await fetchLinks({ data: { purchaseId } });
+      await markDownload({ data: { purchaseId } });
+      return links;
+    },
+    onSuccess: (links) => {
       queryClient.invalidateQueries({ queryKey: ["purchases"] });
-      toast.success("Download started", { description: "Your PDF link will be emailed once files are uploaded." });
+      for (const link of links) window.open(link.url, "_blank", "noopener,noreferrer");
+      toast.success("Download started", { description: links.map((l) => l.label).join(" + ") });
     },
     onError: (error: Error) => toast.error("Could not start download", { description: error.message }),
   });
