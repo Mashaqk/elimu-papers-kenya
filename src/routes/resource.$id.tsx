@@ -29,8 +29,8 @@ function ResourcePage() {
   const { id } = Route.useParams();
   const { resources, isLoading } = useResources();
   const resource = resources.find((r) => r.id === id);
-  const grade = GRADES.find((g) => g.slug === resource.gradeSlug);
-  const subject = SUBJECTS.find((s) => s.slug === resource.subjectSlug);
+  const grade = GRADES.find((g) => g.slug === resource?.gradeSlug);
+  const subject = SUBJECTS.find((s) => s.slug === resource?.subjectSlug);
   const related = resource
     ? resources.filter((r) => r.id !== resource.id && (r.subjectSlug === resource.subjectSlug || r.gradeSlug === resource.gradeSlug)).slice(0, 3)
     : [];
