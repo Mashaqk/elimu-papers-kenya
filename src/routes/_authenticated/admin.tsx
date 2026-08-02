@@ -5,7 +5,6 @@ import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import {
   BarChart3,
-  CheckCircle2,
   FileUp,
   Files,
   Loader2,
@@ -484,5 +483,3 @@ function Stat({ icon: Icon, label, value }: { icon: typeof Wallet; label: string
     </div>
   );
 }
-
-export { CheckCircle2 };
