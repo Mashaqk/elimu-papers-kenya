@@ -14,21 +14,27 @@ export const listResources = createServerFn({ method: "GET" }).handler(async () 
   return (data ?? []).map((row) => mapResource(row as ResourceRow));
 });
 
+async function checkIsAdmin(context: { supabase: any; userId: string }): Promise<boolean> {
+  const { data, error } = await context.supabase
+    .from("user_roles")
+    .select("role")
+    .eq("user_id", context.userId)
+    .eq("role", "admin")
+    .maybeSingle();
+  if (error) throw new Error(error.message);
+  return Boolean(data);
+}
+
 export const getMyRoles = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    const { data, error } = await context.supabase.rpc("has_role", {
-      _user_id: context.userId,
-      _role: "admin",
-    });
-    if (error) throw new Error(error.message);
-    return { isAdmin: Boolean(data) };
+    return { isAdmin: await checkIsAdmin(context) };
   });
 
 export const adminListResources = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    const { data: isAdmin } = await context.supabase.rpc("has_role", { _user_id: context.userId, _role: "admin" });
+    const isAdmin = await checkIsAdmin(context);
     if (!isAdmin) throw new Error("Forbidden");
     const { data, error } = await context.supabase
       .from("resources")
@@ -73,7 +79,7 @@ export const createResource = createServerFn({ method: "POST" })
     };
   })
   .handler(async ({ data, context }) => {
-    const { data: isAdmin } = await context.supabase.rpc("has_role", { _user_id: context.userId, _role: "admin" });
+    const isAdmin = await checkIsAdmin(context);
     if (!isAdmin) throw new Error("Forbidden");
     const { data: row, error } = await context.supabase
       .from("resources")
@@ -104,7 +110,7 @@ export const setResourcePublished = createServerFn({ method: "POST" })
     return { id: input.id, published: Boolean(input.published) };
   })
   .handler(async ({ data, context }) => {
-    const { data: isAdmin } = await context.supabase.rpc("has_role", { _user_id: context.userId, _role: "admin" });
+    const isAdmin = await checkIsAdmin(context);
     if (!isAdmin) throw new Error("Forbidden");
     const { error } = await context.supabase.from("resources").update({ published: data.published }).eq("id", data.id);
     if (error) throw new Error(error.message);
@@ -118,7 +124,7 @@ export const deleteResource = createServerFn({ method: "POST" })
     return { id: input.id };
   })
   .handler(async ({ data, context }) => {
-    const { data: isAdmin } = await context.supabase.rpc("has_role", { _user_id: context.userId, _role: "admin" });
+    const isAdmin = await checkIsAdmin(context);
     if (!isAdmin) throw new Error("Forbidden");
     const { error } = await context.supabase.from("resources").delete().eq("id", data.id);
     if (error) throw new Error(error.message);
@@ -128,7 +134,7 @@ export const deleteResource = createServerFn({ method: "POST" })
 export const adminReports = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    const { data: isAdmin } = await context.supabase.rpc("has_role", { _user_id: context.userId, _role: "admin" });
+    const isAdmin = await checkIsAdmin(context);
     if (!isAdmin) throw new Error("Forbidden");
 
     const [purchasesRes, profilesRes, resourcesRes] = await Promise.all([
